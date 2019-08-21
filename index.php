@@ -7,6 +7,11 @@ include('config.php');
 
 $url = explode("/",$_SERVER['REQUEST_URI']);
 
+// Sanitize URL.
+for ($i=0; $i < count($url)-1; $i++) { 
+	$url[$i] = filter_var($url[$i], FILTER_SANITIZE_STRING);
+}
+
 // Check if commander is valid. If the commander is not valid it dies with a 404 message. This is also used to prevent URL scanning.
 if ( !in_array($url[1], $validCommanders) ) {
 	
@@ -19,7 +24,7 @@ if ( !in_array($url[1], $validCommanders) ) {
 	logCommand($url);
 	if ( $url[2] == 'set' ) { 
 		$command = setCommand($url);
-		echo "{'result':'success','message':'".$command."'}";
+		echo formatResult($command);
 		exit;
 	}
 
@@ -34,7 +39,8 @@ if ( !in_array($url[1], $validCommanders) ) {
 	}
 
 	// Request is invalid so faile. 
-	echo "{'result':'fail','message':'invalid URL structure.'}";
+	echo formatResult('invalid URL structure.',$status='fail');
+
 
 }
 
@@ -74,7 +80,7 @@ function read( $path, $file, $delete = true ) {
 	if( $delete ) {
 
 		$fp = fopen( $path."/".$file, 'w');
-		fwrite($fp, "");  
+		fwrite($fp, formatResult("",$status='success'));  
 		fclose($fp); 
 
 	} 
@@ -105,11 +111,18 @@ function getUserIpAddr(){
  */
 function setCommand($url){
 
+	$command = new stdClass();
+
 	if ( isset($url[5] )) {
-		$command = "{'".$url[4]."':'".$url[5]."'}";
+		$command->{$url[4]} = $url[5];
 	} else {
-		$command = "{'command':'".$url[4]."'}";
+		$command->command = $url[4];
 	}
+
+	$command->result = "success";
+
+	$command = json_encode($command);
+
 
 	writeFile('commands/',$url[3].'.txt',$command);
 	return $command;
@@ -122,8 +135,12 @@ function setCommand($url){
  * @return string Command logged.
  */
 function logCommand($url){
-	$command = "{'timestamp':'".time()."','ip':'".getUserIpAddr()."','command':'".json_encode( $url )."'},";
-	writeFile('logs',$url[1]."_".$url[3].'.txt',"\n".$command,'a');
+	$command = new stdClass();
+	$command->timestamp = time();
+	$command->ip = getUserIpAddr();
+	$command->command = implode(",", $url ); 
+	$command = json_encode( $command );
+	writeFile('logs',$url[1]."_".$url[3].'.txt',$command.",",'a');
 	return $command;
 }
 
@@ -144,8 +161,17 @@ function getCommand($url){
  * @return string Command
  */
 function getLog($url){
+	$result = new stdClass();
+	$result->result = "success";
+	$result->log = "[".rtrim( read('logs',$url[1]."_".$url[3].'.txt',false), "," )."]";
+	return json_encode($result);
+}
 
-	return "[".read('logs',$url[1]."_".$url[3].'.txt',false)."]";
+function formatResult($msg,$status='success'){
+	$result = new stdClass();
+	$result->result = $status;
+	$result->message = $msg;
+	return json_encode($result);
 
 }
 

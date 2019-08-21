@@ -1,0 +1,26 @@
+# Turn on URL rewriting
+RewriteEngine On
+
+# Installation directory
+RewriteBase /rootDir/
+
+# Protect application and system files from being viewed
+RewriteRule ^(application|modules|system) - [F,L]
+
+# Allow any files or directories that exist to be displayed directly
+RewriteCond %{REQUEST_FILENAME} !-f
+RewriteCond %{REQUEST_FILENAME} !-d
+
+# Rewrite all other URLs to index.php/
+RewriteRule .* index.php/$0 [PT,L]
+
+# Authentication
+
+#SetEnv  require_no_auth=false
+#SetEnvIf Request_URI "^/*/get/*" require_no_auth=true
+
+#AuthType Basic
+#AuthName "Please Login"
+#AuthUserFile .htpasswd
+#Require valid-user
+#Require env require_no_auth

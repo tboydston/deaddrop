@@ -1,6 +1,6 @@
 # Dead Drop
 
-Dead drop is a simple web app that allows you to leave short messages for machines that are deleted immediatly after they are read. Below are a few possible use cases for this concept.  
+Dead drop is a simple web app that allows you to leave short messages for machines that are deleted immediately after they are read. Below are a few possible use cases for this concept.  
 
 - Kill switch for applications running behind a firewall. 
 - Make quick config changes on the go. 
