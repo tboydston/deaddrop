@@ -1,10 +1,6 @@
 <?php
 include('config.php');
 
-// Debug
-// ini_set('display_errors', 1);
-// ini_set('display_startup_errors', 1);
-
 $url = explode("/",$_SERVER['REQUEST_URI']);
 
 // Sanitize URL.
@@ -12,14 +8,14 @@ for ($i=0; $i < count($url)-1; $i++) {
 	$url[$i] = filter_var($url[$i], FILTER_SANITIZE_STRING);
 }
 
-// Check if commander is valid. If the commander is not valid it dies with a 404 message. This is also used to prevent URL scanning.
-if ( !in_array($url[1], $validCommanders) ) {
+// Check if commander is valid. If the commander is not valid it dies with a 404 message. This also pervent using the service for bot command and control.
+if ( is_array($validCommanders) && !in_array($url[1], $validCommanders ) ) {
 	
 	writeFile( 'logs/', 'failAccess.txt', "\n".time()." Failed access attempt under commander name ".$url[1]." User IP: ".getUserIpAddr(), 'a' );
 	header("HTTP/1.0 404 Not Found");
-	die('404');
+	die('404'); 
 
-} else { // Process the request.
+} else if ( ( is_array($validCommanders) && in_array($url[1], $validCommanders ) ) || $validCommanders == "*" ) { // Process the request.
 
 	logCommand($url);
 	if ( $url[2] == 'set' ) { 
@@ -116,7 +112,13 @@ function setCommand($url){
 	if ( isset($url[5] )) {
 		$command->{$url[4]} = $url[5];
 	} else {
-		$command->command = $url[4];
+
+		if ( !isset($url[4]) ) {
+			$command->command = "";
+		} else {
+			$command->command = $url[4];
+		}
+		
 	}
 
 	$command->result = "success";

@@ -16,9 +16,21 @@ Next in the 'config.php' file add some users to $validCommanders array.
 $validCommanders = ['bob']
 ```
 
+You can also allow anyone to leave a command be using a '*' instead of an array for valid commanders. 
+
+
+```
+$validCommanders = '*'
+```
+
 ### Note on Security
 
-This is not intended to be a highly secure messaging service. If you are using shared hosting or are behing a firewall or service that does URL tracking people with be able to see what links you use to send commands and could reproduce or abuse this. You can increase security by enabling .htpasswd in the .htaccess file. Currently this is commented out. 
+This is not intended to be a highly secure messaging service. If you are using shared hosting or are behing a firewall or service that does URL tracking people with be able to see what links you use to send commands and could reproduce or abuse this. You can increase security by enabling .htpasswd in the .htaccess file. Currently this is commented out. After the username and password is set you can access the site programatically with by including the credentials in the url. 
+
+Example:
+```
+https://[userName]:[passWord]@www.example.com/[user]/get/[bot]
+```
 
 ## Usage
 
