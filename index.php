@@ -20,13 +20,12 @@ if ( is_array($validCommanders) && !in_array($url[1], $validCommanders ) ) {
 
 } else if ( ( is_array($validCommanders) && in_array($url[1], $validCommanders ) ) || $validCommanders == "*" ) { // Process the request.
 
-
-	logCommand($url);
-
 	if ( !isset($url[2]) ){
 		echo formatResult('invalid URL structure.',$status='fail');
 		exit;
 	}
+
+	logCommand($url);
 
 	if ( $url[2] == 'set' ) { 
 		$command = setCommand($url);
