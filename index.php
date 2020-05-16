@@ -3,6 +3,8 @@ include('config.php');
 
 $url = explode("/",$_SERVER['REQUEST_URI']);
 
+if ( !isset($url[1]) || isset($url[6]) ){ die('404'); }
+
 // Sanitize URL.
 for ($i=0; $i < count($url)-1; $i++) { 
 	$url[$i] = filter_var($url[$i], FILTER_SANITIZE_STRING);
