@@ -3,7 +3,8 @@ include('config.php');
 
 $url = explode("/",$_SERVER['REQUEST_URI']);
 
-if ( !isset($url[1]) || isset($url[6]) ){ die('404'); }
+//@TODO add proper URL format filtering.
+if ( empty($url[1]) || isset($url[6]) ){ die('404'); }
 
 // Sanitize URL.
 for ($i=0; $i < count($url)-1; $i++) { 
@@ -19,7 +20,14 @@ if ( is_array($validCommanders) && !in_array($url[1], $validCommanders ) ) {
 
 } else if ( ( is_array($validCommanders) && in_array($url[1], $validCommanders ) ) || $validCommanders == "*" ) { // Process the request.
 
+
 	logCommand($url);
+
+	if ( !isset($url[2]) ){
+		echo formatResult('invalid URL structure.',$status='fail');
+		exit;
+	}
+
 	if ( $url[2] == 'set' ) { 
 		$command = setCommand($url);
 		echo formatResult($command);
