@@ -135,7 +135,7 @@ function setCommand($url){
 	$command = json_encode($command);
 
 
-	writeFile('../commands/',$url[3].'.txt',$command);
+	writeFile('../commands/',$url[1]."-".$url[3].'.txt',$command);
 	return $command;
 
 }
@@ -151,7 +151,7 @@ function logCommand($url){
 	$command->ip = getUserIpAddr();
 	$command->command = implode(",", $url ); 
 	$command = json_encode( $command );
-	writeFile('../logs',$url[1]."_".$url[3].'.txt',$command.",",'a');
+	writeFile('../logs',$url[1]."-".$url[3].'.txt',$command.",",'a');
 	return $command;
 }
 
@@ -162,7 +162,7 @@ function logCommand($url){
  */
 function getCommand($url){
 
-	return read('../commands',$url[3].'.txt');
+	return read('../commands',$url[1]."-".$url[3].'.txt');
 
 }
 
@@ -174,7 +174,7 @@ function getCommand($url){
 function getLog($url){
 	$result = new stdClass();
 	$result->result = "success";
-	$result->log = "[".rtrim( read('../logs',$url[1]."_".$url[3].'.txt',false), "," )."]";
+	$result->log = "[".rtrim( read('../logs',$url[1]."-".$url[3].'.txt',false), "," )."]";
 	return json_encode($result);
 }
 
