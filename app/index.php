@@ -1,5 +1,5 @@
 <?php
-include('config.php');
+include('../config.php');
 
 $url = explode("/",$_SERVER['REQUEST_URI']);
 
@@ -14,7 +14,7 @@ for ($i=0; $i < count($url)-1; $i++) {
 // Check if commander is valid. If the commander is not valid it dies with a 404 message. This also pervent using the service for bot command and control.
 if ( is_array($validCommanders) && !in_array($url[1], $validCommanders ) ) {
 	
-	writeFile( 'logs/', 'failAccess.txt', "\n".time()." Failed access attempt under commander name ".$url[1]." User IP: ".getUserIpAddr(), 'a' );
+	writeFile( '../logs/', 'failAccess.txt', "\n".time()." Failed access attempt under commander name ".$url[1]." User IP: ".getUserIpAddr(), 'a' );
 	header("HTTP/1.0 404 Not Found");
 	die('404'); 
 
@@ -135,7 +135,7 @@ function setCommand($url){
 	$command = json_encode($command);
 
 
-	writeFile('commands/',$url[3].'.txt',$command);
+	writeFile('../commands/',$url[3].'.txt',$command);
 	return $command;
 
 }
@@ -151,7 +151,7 @@ function logCommand($url){
 	$command->ip = getUserIpAddr();
 	$command->command = implode(",", $url ); 
 	$command = json_encode( $command );
-	writeFile('logs',$url[1]."_".$url[3].'.txt',$command.",",'a');
+	writeFile('../logs',$url[1]."_".$url[3].'.txt',$command.",",'a');
 	return $command;
 }
 
@@ -162,7 +162,7 @@ function logCommand($url){
  */
 function getCommand($url){
 
-	return read('commands',$url[3].'.txt');
+	return read('../commands',$url[3].'.txt');
 
 }
 
@@ -174,7 +174,7 @@ function getCommand($url){
 function getLog($url){
 	$result = new stdClass();
 	$result->result = "success";
-	$result->log = "[".rtrim( read('logs',$url[1]."_".$url[3].'.txt',false), "," )."]";
+	$result->log = "[".rtrim( read('../logs',$url[1]."_".$url[3].'.txt',false), "," )."]";
 	return json_encode($result);
 }
 
